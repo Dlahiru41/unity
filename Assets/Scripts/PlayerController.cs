@@ -110,6 +110,8 @@ public class PlayerController : MonoBehaviour
 
         b.damage = bulletDamage;
         b.lifeTime = bulletLifetime;
+        b.team = BulletTeam.Player;
+        b.owner = gameObject;
 
         Rigidbody br = bullet.GetComponent<Rigidbody>();
         if (br == null)

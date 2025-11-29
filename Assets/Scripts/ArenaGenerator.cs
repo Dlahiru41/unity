@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 // Generates a tile-based combat arena (minimum 50x50) with boundary walls,
 // internal rooms, corridors, hiding areas and open regions. Deterministic by default.
@@ -37,8 +38,12 @@ public class ArenaGenerator : MonoBehaviour
     public Vector3 cameraOffset = new Vector3(0f, 30f, -30f);
     public float cameraSmoothTime = 0.12f;
 
+    [Header("Events")]
+    public UnityEvent OnArenaGenerated;
+
     // internal map: 1 = wall, 0 = floor
     private int[,] _map;
+    private float[,] _costMap;
 
     // parent objects to keep the hierarchy clean
     private Transform _arenaParent;
@@ -161,6 +166,8 @@ public class ArenaGenerator : MonoBehaviour
                 }
             }
         }
+
+        OnArenaGenerated?.Invoke();
     }
 
     private void InitializeMap(System.Random prng)
@@ -424,6 +431,8 @@ public class ArenaGenerator : MonoBehaviour
         _wallParent = new GameObject("Walls").transform;
         _wallParent.SetParent(_arenaParent, false);
 
+        _costMap = new float[width, height];
+
         // create a single big floor under everything for grounding
         GameObject floorPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floorPlane.name = "ArenaBaseFloor";
@@ -449,10 +458,17 @@ public class ArenaGenerator : MonoBehaviour
                     cube.transform.SetParent(_wallParent, false);
                     cube.transform.position = new Vector3(x * tileSize, 0f, y * tileSize);
                     cube.transform.localScale = new Vector3(tileSize, 2f, tileSize);
-                    // simple material color
                     var rend = cube.GetComponent<Renderer>();
                     if (rend != null)
                         rend.sharedMaterial = GetDebugMaterial(Color.grey);
+
+                    _costMap[x, y] = float.PositiveInfinity;
+                }
+                else
+                {
+                    // assign cost multipliers based on adjacency: more open areas cheaper than narrow corridors
+                    int nearbyWalls = GetSurroundingWallCount(x, y);
+                    _costMap[x, y] = Mathf.Lerp(1f, 3f, nearbyWalls / 8f);
                 }
             }
         }
@@ -655,5 +671,35 @@ public class ArenaGenerator : MonoBehaviour
     {
         if (generateOnStart)
             Generate();
+    }
+
+    public int[,] GetMapCopy()
+    {
+        if (_map == null) return null;
+        var copy = new int[width, height];
+        System.Array.Copy(_map, copy, _map.Length);
+        return copy;
+    }
+
+    public float[,] GetCostMap()
+    {
+        if (_costMap == null) return null;
+        var copy = new float[width, height];
+        System.Array.Copy(_costMap, copy, _costMap.Length);
+        return copy;
+    }
+
+    public Vector3 GetRandomFloorPosition()
+    {
+        for (int attempt = 0; attempt < 1000; attempt++)
+        {
+            int x = Random.Range(1, width - 1);
+            int y = Random.Range(1, height - 1);
+            if (_map != null && _map[x, y] == 0)
+            {
+                return new Vector3(x * tileSize, 0.5f, y * tileSize);
+            }
+        }
+        return Vector3.zero;
     }
 }

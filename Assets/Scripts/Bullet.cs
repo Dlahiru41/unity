@@ -1,9 +1,17 @@
 using UnityEngine;
 
+public enum BulletTeam
+{
+    Player,
+    Enemy
+}
+
 public class Bullet : MonoBehaviour
 {
     public int damage = 10;
     public float lifeTime = 4f;
+    public BulletTeam team = BulletTeam.Player;
+    public GameObject owner;
 
     private float _t = 0f;
 
@@ -16,14 +24,28 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        var pc = collision.collider.GetComponent<PlayerController>();
-        if (pc != null)
+        if (owner != null && collision.collider.gameObject == owner)
         {
-            pc.TakeDamage(damage);
+            return;
         }
 
-        // destroy bullet on any collision
+        if (team == BulletTeam.Player)
+        {
+            var enemy = collision.collider.GetComponent<EnemyBase>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
+        }
+        else
+        {
+            var pc = collision.collider.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                pc.TakeDamage(damage);
+            }
+        }
+
         Destroy(gameObject);
     }
 }
-
