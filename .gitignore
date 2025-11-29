@@ -1,0 +1,45 @@
+# Unity generated files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.csproj
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Unity Asset Store tools
+Assets/AssetStoreTools*
+
+# Auto-generated files
+*.apk
+*.unitypackage
+
+# Ignore crash reports
+*.crash
+*.error
+*.log
+
+# Versioned files
+!Assets/
+!ProjectSettings/
+!Packages/manifest.json
+!Packages/packages-lock.json
