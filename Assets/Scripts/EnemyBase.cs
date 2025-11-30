@@ -103,6 +103,11 @@ public abstract class EnemyBase : MonoBehaviour
         fireCooldownTimer = fireCooldown;
     }
 
+    public void TryFirePublic()
+    {
+        TryFire();
+    }
+
     public virtual void TakeDamage(int dmg)
     {
         currentHP -= dmg;

@@ -21,38 +21,12 @@ public class EnemyHUDLegend : MonoBehaviour
     private GUIStyle _textStyle;
     private bool _initialized;
 
-    private void Start()
-    {
-        InitializeStyles();
-    }
-
-    private void InitializeStyles()
-    {
-        // Box style
-        _boxStyle = new GUIStyle(GUI.skin.box);
-        _boxStyle.normal.background = MakeTex(2, 2, new Color(0, 0, 0, 0.7f));
-        _boxStyle.padding = new RectOffset(10, 10, 5, 5);
-
-        // Header style
-        _headerStyle = new GUIStyle();
-        _headerStyle.fontSize = 14;
-        _headerStyle.fontStyle = FontStyle.Bold;
-        _headerStyle.normal.textColor = Color.yellow;
-        _headerStyle.alignment = TextAnchor.MiddleLeft;
-
-        // Text style
-        _textStyle = new GUIStyle();
-        _textStyle.fontSize = 12;
-        _textStyle.normal.textColor = Color.white;
-        _textStyle.alignment = TextAnchor.MiddleLeft;
-
-        _initialized = true;
-    }
-
     private void OnGUI()
     {
         if (!_initialized)
+        {
             InitializeStyles();
+        }
 
         if (!showLegend)
             return;
@@ -123,6 +97,29 @@ public class EnemyHUDLegend : MonoBehaviour
         }
     }
 
+    private void InitializeStyles()
+    {
+        // Box style
+        _boxStyle = new GUIStyle(GUI.skin.box);
+        _boxStyle.normal.background = MakeTex(2, 2, new Color(0, 0, 0, 0.7f));
+        _boxStyle.padding = new RectOffset(10, 10, 5, 5);
+
+        // Header style
+        _headerStyle = new GUIStyle();
+        _headerStyle.fontSize = 14;
+        _headerStyle.fontStyle = FontStyle.Bold;
+        _headerStyle.normal.textColor = Color.yellow;
+        _headerStyle.alignment = TextAnchor.MiddleLeft;
+
+        // Text style
+        _textStyle = new GUIStyle();
+        _textStyle.fontSize = 12;
+        _textStyle.normal.textColor = Color.white;
+        _textStyle.alignment = TextAnchor.MiddleLeft;
+
+        _initialized = true;
+    }
+
     private Rect GetBoxRect(float width, float height)
     {
         float margin = 10f;
@@ -153,4 +150,3 @@ public class EnemyHUDLegend : MonoBehaviour
         return result;
     }
 }
-

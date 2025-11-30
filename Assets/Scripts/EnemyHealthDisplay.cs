@@ -14,25 +14,25 @@ public class EnemyHealthDisplay : MonoBehaviour
     private GUIStyle _labelStyle;
     private bool _initialized;
 
-    private void Start()
-    {
-        _mainCamera = Camera.main;
-        if (enemy == null)
-        {
-            enemy = GetComponent<EnemyBase>();
-        }
-        
-        _labelStyle = new GUIStyle();
-        _labelStyle.alignment = TextAnchor.MiddleCenter;
-        _labelStyle.normal.textColor = Color.white;
-        _labelStyle.fontSize = 12;
-        _labelStyle.fontStyle = FontStyle.Bold;
-        
-        _initialized = true;
-    }
-
     private void OnGUI()
     {
+        if (!_initialized)
+        {
+            _mainCamera = Camera.main;
+            if (enemy == null)
+            {
+                enemy = GetComponent<EnemyBase>();
+            }
+            
+            _labelStyle = new GUIStyle();
+            _labelStyle.alignment = TextAnchor.MiddleCenter;
+            _labelStyle.normal.textColor = Color.white;
+            _labelStyle.fontSize = 12;
+            _labelStyle.fontStyle = FontStyle.Bold;
+            
+            _initialized = true;
+        }
+
         if (!_initialized || enemy == null || _mainCamera == null)
             return;
 
