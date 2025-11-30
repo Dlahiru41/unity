@@ -57,7 +57,7 @@ public class EnemyHUDLegend : MonoBehaviour
         {
             if (enemy == null) continue;
 
-            // Enemy ID
+            // Enemy ID with state
             Rect idRect = new Rect(boxRect.x + 15, boxRect.y + yOffset, boxRect.width - 30, lineHeight);
             
             // Color code by type
@@ -68,7 +68,15 @@ public class EnemyHUDLegend : MonoBehaviour
                 typeColor = Color.green;
             
             _textStyle.normal.textColor = typeColor;
-            GUI.Label(idRect, $"{enemy.enemyID}", _textStyle);
+            
+            // Display ID and state
+            string displayText = enemy.enemyID;
+            if (enemy is EnemyFSM)
+            {
+                EnemyFSM fsm = (EnemyFSM)enemy;
+                displayText = $"{enemy.enemyID} [{fsm.currentState}]";
+            }
+            GUI.Label(idRect, displayText, _textStyle);
 
             yOffset += lineHeight;
 

@@ -9,9 +9,11 @@ public class EnemyHealthDisplay : MonoBehaviour
     public Vector3 offset = new Vector3(0, 2f, 0);
     public float barWidth = 1f;
     public float barHeight = 0.15f;
+    public bool showState = true; // Show FSM state
     
     private Camera _mainCamera;
     private GUIStyle _labelStyle;
+    private GUIStyle _stateStyle;
     private bool _initialized;
 
     private void OnGUI()
@@ -30,6 +32,12 @@ public class EnemyHealthDisplay : MonoBehaviour
             _labelStyle.fontSize = 12;
             _labelStyle.fontStyle = FontStyle.Bold;
             
+            _stateStyle = new GUIStyle();
+            _stateStyle.alignment = TextAnchor.MiddleCenter;
+            _stateStyle.normal.textColor = Color.yellow;
+            _stateStyle.fontSize = 10;
+            _stateStyle.fontStyle = FontStyle.Normal;
+            
             _initialized = true;
         }
 
@@ -47,8 +55,19 @@ public class EnemyHealthDisplay : MonoBehaviour
             screenPos.y = Screen.height - screenPos.y;
 
             // Draw ID label
-            Rect labelRect = new Rect(screenPos.x - 30, screenPos.y - 30, 60, 20);
+            Rect labelRect = new Rect(screenPos.x - 30, screenPos.y - 45, 60, 20);
             GUI.Label(labelRect, enemy.enemyID, _labelStyle);
+
+            // Draw FSM state if available
+            if (showState && enemy is EnemyFSM)
+            {
+                EnemyFSM fsm = (EnemyFSM)enemy;
+                Rect stateRect = new Rect(screenPos.x - 40, screenPos.y - 28, 80, 15);
+                
+                // Color-code state text
+                _stateStyle.normal.textColor = GetStateColor(fsm.currentState);
+                GUI.Label(stateRect, fsm.currentState.ToString(), _stateStyle);
+            }
 
             // Draw health bar background (black)
             float barWidthPixels = barWidth * 50f;
@@ -66,6 +85,24 @@ public class EnemyHealthDisplay : MonoBehaviour
 
             // Reset color
             GUI.color = Color.white;
+        }
+    }
+
+    private Color GetStateColor(EnemyFSM.State state)
+    {
+        switch (state)
+        {
+            case EnemyFSM.State.Idle: return Color.gray;
+            case EnemyFSM.State.Patrol: return Color.blue;
+            case EnemyFSM.State.Seek: return Color.cyan;
+            case EnemyFSM.State.Chase: return Color.red;
+            case EnemyFSM.State.Strafe: return Color.yellow;
+            case EnemyFSM.State.Retreat: return Color.magenta;
+            case EnemyFSM.State.TakeCover: return Color.green;
+            case EnemyFSM.State.Ambush: return new Color(0.5f, 0f, 0.5f);
+            case EnemyFSM.State.Flank: return new Color(1f, 0.5f, 0f);
+            case EnemyFSM.State.Dead: return Color.black;
+            default: return Color.white;
         }
     }
 }

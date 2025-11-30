@@ -359,6 +359,12 @@ public abstract class EnemyFSM : EnemyBase
         }
     }
 
+    // Draw state gizmo in both Scene and Game view (always visible)
+    private void OnDrawGizmos()
+    {
+        DrawStateGizmo();
+    }
+    
     protected virtual void OnDrawGizmosSelected()
     {
         DrawStateGizmo();
