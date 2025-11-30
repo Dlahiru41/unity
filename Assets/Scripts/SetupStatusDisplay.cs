@@ -67,6 +67,8 @@ public class SetupStatusDisplay : MonoBehaviour
         GUI.Label(new Rect(30, y, 380, 20), "• Magenta: NavMesh AI (direct chaser)", _textStyle);
         y += 18;
         GUI.Label(new Rect(30, y, 380, 20), "• Green: Grid AI (strategic pathfinder)", _textStyle);
+        y += 18;
+        GUI.Label(new Rect(30, y, 380, 20), "• ID & HP shown above each enemy", _textStyle);
         
         y += 30;
         _textStyle.fontSize = 13;

@@ -12,15 +12,43 @@ public abstract class EnemyBase : MonoBehaviour
     public float bulletLifetime = 3f;
     public int bulletDamage = 10;
 
+    [Header("ID")]
+    public string enemyID;
+
     protected Transform playerTarget;
-    protected float currentHP;
+    public float currentHP; // Public for health display
     protected float fireCooldownTimer;
+    private static int _nextEnemyID = 1;
 
     protected virtual void Awake()
     {
         currentHP = maxHealth;
         var playerController = FindObjectOfType<PlayerController>();
         playerTarget = playerController != null ? playerController.transform : null;
+
+        // Generate unique enemy ID
+        if (string.IsNullOrEmpty(enemyID))
+        {
+            enemyID = $"E{_nextEnemyID++}";
+        }
+
+        // Ensure we have a Rigidbody for collision detection
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+        }
+        rb.useGravity = false;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.mass = 1f;
+        rb.drag = 5f; // Helps prevent pushing
+
+        // Ensure collider exists and is set up for collision
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+        {
+            col.isTrigger = false; // Ensure physical collisions
+        }
     }
 
     protected virtual void Update()

@@ -69,6 +69,15 @@ public class SceneSetupHelper : MonoBehaviour
             Debug.Log("Added Runtime Status Display (press H in Play mode)");
         }
 
+        // Add enemy HUD legend
+        if (FindObjectOfType<EnemyHUDLegend>() == null)
+        {
+            GameObject hudObj = new GameObject("EnemyHUD");
+            var hud = hudObj.AddComponent<EnemyHUDLegend>();
+            hud.position = EnemyHUDLegend.CornerPosition.TopRight;
+            Debug.Log("Added Enemy HUD Legend (top-right corner)");
+        }
+
         EditorUtility.DisplayDialog("Scene Setup Complete",
             "Combat Arena scene configured successfully!\n\n" +
             "- ArenaGenerator: ✓\n" +

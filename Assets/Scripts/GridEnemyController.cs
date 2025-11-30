@@ -14,6 +14,7 @@ public class GridEnemyController : EnemyBase
     private bool _initialized;
 
     private ArenaGenerator _arenaGenerator;
+    private Rigidbody _rb;
 
     public void Init(GridPathfinder pathfinder)
     {
@@ -21,6 +22,7 @@ public class GridEnemyController : EnemyBase
         _initialized = true;
 
         _arenaGenerator = FindObjectOfType<ArenaGenerator>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     protected override void HandleBehaviour()
@@ -59,7 +61,18 @@ public class GridEnemyController : EnemyBase
         }
 
         Vector3 dir = toGoal.normalized;
-        transform.position += dir * (moveSpeed * Time.deltaTime);
+        
+        // Use Rigidbody movement for proper collision handling
+        if (_rb != null)
+        {
+            Vector3 newPos = _rb.position + dir * (moveSpeed * Time.deltaTime);
+            _rb.MovePosition(newPos);
+        }
+        else
+        {
+            transform.position += dir * (moveSpeed * Time.deltaTime);
+        }
+        
         transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
     }
 

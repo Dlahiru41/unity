@@ -130,8 +130,10 @@ public class EnemySpawner : MonoBehaviour
         root.transform.SetParent(transform, false);
         root.transform.position = position;
 
-        var collider = root.GetComponent<Collider>();
-        collider.material = null;
+        // Set up collider for proper collision (not trigger)
+        var col = root.GetComponent<Collider>();
+        col.material = null;
+        col.isTrigger = false; // Ensure physical collisions
 
         if (navMesh)
         {
@@ -140,6 +142,7 @@ public class EnemySpawner : MonoBehaviour
             agent.height = 1.7f;
             agent.acceleration = 20f;
             agent.angularSpeed = 540f;
+            agent.obstacleAvoidanceType = UnityEngine.AI.ObstacleAvoidanceType.HighQualityObstacleAvoidance;
 
             var controller = root.AddComponent<NavMeshEnemyController>();
             controller.moveSpeed = 3.5f;
@@ -155,11 +158,16 @@ public class EnemySpawner : MonoBehaviour
         baseStats.attackRange = 10f;
         baseStats.fireCooldown = 1.25f;
 
+        // Add health display above enemy
+        var healthDisplay = root.AddComponent<EnemyHealthDisplay>();
+        healthDisplay.enemy = baseStats;
+        healthDisplay.offset = new Vector3(0, 1.2f, 0);
+
         var mat = new Material(Shader.Find("Standard"));
         mat.color = navMesh ? Color.magenta : Color.green;
-        var renderer = root.GetComponent<Renderer>();
-        if (renderer != null)
-            renderer.sharedMaterial = mat;
+        var rend = root.GetComponent<Renderer>();
+        if (rend != null)
+            rend.sharedMaterial = mat;
 
         return root;
     }
